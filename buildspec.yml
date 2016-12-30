@@ -1,0 +1,29 @@
+version: 0.1
+
+environment_variables:
+  plaintext:
+    key: "value"
+    key: "value"
+            
+phases:
+  install:
+    commands:
+      - true
+      - false
+  pre_build:
+    commands:
+      - command
+      - command
+  build:
+    commands:
+      - command
+      - command
+  post_build:
+    commands:
+      - command
+      - command
+artifacts:
+  files:
+    - location
+    - location
+  discard-paths: yes
