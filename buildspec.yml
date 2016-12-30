@@ -8,8 +8,8 @@ environment_variables:
 phases:
   install:
     commands:
-      - true
       - false
+      - true
   pre_build:
     commands:
       - command
