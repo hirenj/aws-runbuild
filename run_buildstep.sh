@@ -29,11 +29,11 @@ parse_yaml() {
     }' | sed 's/_=/+=/g'
 }
 
-yml_values=$(parse_yaml $SRCDIR/buildspec.yml)
+yml_values=$(parse_yaml $SRCDIR/buildspec.yml "buildspec_")
 
 eval $yml_values
 
-install_command_variable="phases_${STEP}_commands"
+install_command_variable="buildspec_phases_${STEP}_commands"
 eval install_commands=(\${$install_command_variable[@]})
 
 for cmd in "${install_commands[@]}"
@@ -46,10 +46,10 @@ done
 # check_version > $SRCDIR/target_version.txt
 
 if [ "$STEP" == "post_build" ]; then
-	for file in "${artifacts_files[@]}"
+	for file in "${buildspec_artifacts_files[@]}"
 	do
 	  echo "Uploading $file"
-	  uploadfolder $cmd --versionstring ....
+	  uploadfolder "$file" --versionstring --bucket "$BUILD_OUTPUT_BUCKET" --prefix "$BUILD_OUTPUT_PREFIX"
 	  if [ $? -gt 0 ]; then
 	  	echo "Upload failure" && exit 1
 	  else
