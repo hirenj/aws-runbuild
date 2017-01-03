@@ -37,7 +37,25 @@ run_cmd() {
     fi
 }
 
+testversion() {
+    filename=$1
+    shift
+    echo "$@"
+    $HOME/dev/node-checkversion/bin/checkversion --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $SRCDIR/target_version.txt
+    if [ $? -gt 0 ]; then
+        echo "No need to run build" && exit 1
+    else
+        echo "Running build updating target version to"
+        cat "$SRCDIR/target_version.txt"
+        exit 0
+    fi
+}
+
+
 BUILDSPEC="$SRCDIR/.buildspec.yml"
+if [ -e "$SRCDIR/target_version.txt" ]; then
+    TARGETVERSION=$(<"$SRCDIR/target_version.txt")
+fi
 
 echo "Source dir is $SRCDIR"
 
@@ -60,13 +78,12 @@ do
 done
 
 # pre_build
-# check_version > $SRCDIR/target_version.txt
 
 if [ "$STEP" == "post_build" ]; then
 	for file in "${buildspec_artifacts_files[@]}"
 	do
 	  echo "Uploading $file"
-	  uploadfolder "$file" --versionstring --bucket "$BUILD_OUTPUT_BUCKET" --prefix "$BUILD_OUTPUT_PREFIX"
+	  uploadfolder "$file" --versionstring $TARGETVERSION --bucket "$BUILD_OUTPUT_BUCKET" --prefix "$BUILD_OUTPUT_PREFIX"
 	  if [ $? -gt 0 ]; then
 	  	echo "Upload failure" && exit 1
 	  else
