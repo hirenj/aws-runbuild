@@ -6,8 +6,6 @@ STEP=$1
 
 SRCDIR=$CODEBUILD_SRC_DIR
 
-SRCDIR="."
-
 parse_yaml() {
     local prefix=$2
     local s
