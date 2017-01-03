@@ -27,7 +27,14 @@ parse_yaml() {
     }' | sed 's/_=/+=/g'
 }
 
-yml_values=$(parse_yaml $SRCDIR/buildspec.yml "buildspec_")
+
+BUILDSPEC="$SRCDIR/.buildspec.yml"
+
+if [ -e "$SRCDIR/buildspec.yml" ]; then
+    BUILDSPEC="$SRCDIR/buildspec.yml"
+fi
+
+yml_values=$(parse_yaml $BUILDSPEC "buildspec_")
 
 eval $yml_values
 
