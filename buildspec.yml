@@ -8,6 +8,7 @@ environment_variables:
 phases:
   install:
     commands:
+      - echo "In here"
       - false
       - true
   pre_build:
