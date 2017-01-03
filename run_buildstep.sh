@@ -40,8 +40,7 @@ run_cmd() {
 testversion() {
     filename=$1
     shift
-    echo "$@"
-    $HOME/dev/node-checkversion/bin/checkversion --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $SRCDIR/target_version.txt
+    checkversion --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $SRCDIR/target_version.txt
     if [ $? -gt 0 ]; then
         echo "No need to run build" && exit 1
     else
