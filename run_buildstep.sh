@@ -80,7 +80,7 @@ done
 
 # pre_build
 
-if [ "$STEP" == "post_build" ]; then
+if [[ "$STEP" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" ]]; then
     echo "Doing custom uploads"
 	for file in "${buildspec_artifacts_files[@]}"
 	do
