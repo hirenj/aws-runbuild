@@ -37,10 +37,12 @@ run_cmd() {
     fi
 }
 
+GIT_STATUS=$(cd $SRCDIR; git describe HEAD --tags | rev | sed 's/g-/./' | sed 's/-/+/' | rev)
+
 testversion() {
     filename=$1
     shift
-    checkversion --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $SRCDIR/target_version.txt
+    checkversion --s3-version-suffix "-${GIT_STATUS}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $SRCDIR/target_version.txt
     if [ $? -gt 0 ]; then
         echo "No need to run build" && exit 1
     else
@@ -50,10 +52,10 @@ testversion() {
     fi
 }
 
-
 BUILDSPEC="$SRCDIR/.buildspec.yml"
 if [ -e "$SRCDIR/target_version.txt" ]; then
     TARGETVERSION=$(<"$SRCDIR/target_version.txt")
+    UPLOADVERSION="${TARGETVERSION}-${GIT_STATUS}"
 fi
 
 echo "Source dir is $SRCDIR"
@@ -83,7 +85,7 @@ if [ "$STEP" == "post_build" ]; then
 	for file in "${buildspec_artifacts_files[@]}"
 	do
 	  echo "Uploading $file"
-	  uploadfolder "$file" --versionstring $TARGETVERSION --bucket "$BUILD_OUTPUT_BUCKET" --prefix "$BUILD_OUTPUT_PREFIX"
+	  uploadfolder "$file" --versionstring $UPLOADVERSION --bucket "$BUILD_OUTPUT_BUCKET" --prefix "$BUILD_OUTPUT_PREFIX"
 	  if [ $? -gt 0 ]; then
 	  	echo "Upload failure" && exit 1
 	  else
