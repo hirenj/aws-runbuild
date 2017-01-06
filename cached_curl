@@ -2,9 +2,15 @@
 
 url=$1
 
+if [ -z "$BUILD_CACHE_BUCKET" ]; then
+	exit 1
+fi
+
 if [ -z $url ]; then
 	exit 0
 fi
+
+
 
 get_s3() {
 	s3path=$1
