@@ -88,14 +88,18 @@ done
 
 if [[ "$step" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" ]]; then
     echo "Doing custom uploads"
-	for file in "${buildspec_artifacts_files[@]}"
-	do
-	  echo "Uploading $file"
-	  uploadfolder "$file" --versionstring $UPLOADVERSION --bucket "$BUILD_OUTPUT_BUCKET" --prefix "$BUILD_OUTPUT_PREFIX"
-	  if [ $? -gt 0 ]; then
-	  	echo "Upload failure" && exit 1
-	  else
-	  	echo "Upload success"
-	  fi
-	done
+    for file in "${buildspec_artifacts_files[@]}"
+    do
+        echo "Uploading $file"
+        if [ -d "$file" ]; then
+            aws s3 sync --metadata "version=$UPLOADVERSION" "${file}/" "s3://${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/"
+        else
+            aws s3 cp --metadata "version=$UPLOADVERSION" "${file}" "s3://${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${file}"
+        fi
+        if [ $? -gt 0 ]; then
+            echo "Upload failure" && exit 1
+        else
+            echo "Upload success"
+        fi
+    done
 fi
