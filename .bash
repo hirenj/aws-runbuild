@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pushd `dirname $_` > /dev/null
+pushd `dirname $BASH_SOURCE` > /dev/null
 RUNBUILDPATH=`pwd`
 popd > /dev/null
 
