@@ -43,12 +43,12 @@ run_cmd() {
     fi
 }
 
-git_status=$(cd $srcdir; git describe HEAD --tags | rev | sed 's/g-/./' | sed 's/-/+/' | rev)
+GIT_STATUS=$(cd $srcdir; git describe HEAD --tags | rev | sed 's/g-/./' | sed 's/-/+/' | rev)
 
 testversion() {
     filename=$1
     shift
-    checkversion --s3-version-suffix "-${git_status}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $srcdir/target_version.txt
+    checkversion --s3-version-suffix "-${GIT_STATUS}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $srcdir/target_version.txt
     if [ $? -gt 0 ]; then
         echo "No need to run build" && exit 1
     else
@@ -61,7 +61,7 @@ testversion() {
 buildspec="$srcdir/.buildspec.yml"
 if [ -e "$srcdir/target_version.txt" ]; then
     TARGETVERSION=$(<"$srcdir/target_version.txt")
-    UPLOADVERSION="${TARGETVERSION}-${git_status}"
+    UPLOADVERSION="${TARGETVERSION}-${GIT_STATUS}"
 fi
 
 echo "Source dir is $srcdir"
@@ -90,7 +90,7 @@ if [[ "$step" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" ]]; then
     echo "Doing custom uploads"
     for file in "${buildspec_artifacts_files[@]}"
     do
-        echo "Uploading $file"
+        echo "Uploading $file with version $UPLOADVERSION"
         if [ -d "$file" ]; then
             aws s3 sync --metadata "version=$UPLOADVERSION" "${file}/" "s3://${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/"
         else
