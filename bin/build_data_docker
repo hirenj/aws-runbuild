@@ -1,0 +1,5 @@
+#!/bin/bash
+
+targetdir=$(basename $PWD)
+
+docker run -v $PWD:"/$targetdir" -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -it hirenj/aws-runbuild $@
