@@ -48,7 +48,7 @@ GIT_STATUS=$(cd $srcdir; git describe HEAD --tags | rev | sed 's/g-/./' | sed 's
 testversion() {
     filename=$1
     shift
-    checkversion --s3-version-suffix "-${GIT_STATUS}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $srcdir/target_version.txt
+    checkversion --s3-version-suffix="-${GIT_STATUS}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $srcdir/target_version.txt
     if [ $? -gt 0 ]; then
         echo "No need to run build" && exit 1
     else
