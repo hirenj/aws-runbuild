@@ -64,6 +64,12 @@ if [ -e "$srcdir/target_version.txt" ]; then
     UPLOADVERSION="${TARGETVERSION}-${GIT_STATUS}"
 fi
 
+export -f testversion
+export srcdir
+export TARGETVERSION
+export UPLOADVERSION
+export GIT_STATUS
+
 echo "Source dir is $srcdir"
 
 if [ -e "$srcdir/buildspec.yml" ]; then
