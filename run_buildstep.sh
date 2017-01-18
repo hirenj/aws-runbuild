@@ -46,15 +46,33 @@ run_cmd() {
 GIT_STATUS=$(cd $srcdir; git describe HEAD --tags | rev | sed 's/g-/./' | sed 's/-/+/' | rev)
 
 testversion() {
+    testversion_with_exit '' $@
+}
+
+testversion_skip_exit() {
+    testversion_with_exit '1' $@
+}
+
+
+testversion_with_exit() {
+    noexit=$1
+    shift
     filename=$1
     shift
+    echo "$GIT_STATUS"
     checkversion --s3-version-suffix="-${GIT_STATUS}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $srcdir/target_version.txt
     if [ $? -gt 0 ]; then
-        echo "No need to run build" && exit 1
+        if [ -z $noexit ]; then
+            echo "No need to run build" && exit 1
+        fi
+        false
     else
         echo "Running build updating target version to"
         cat "$srcdir/target_version.txt"
-        exit 0
+        if [ -z $noexit ]; then
+            exit 0
+        fi
+        true
     fi
 }
 
@@ -65,6 +83,8 @@ if [ -e "$srcdir/target_version.txt" ]; then
 fi
 
 export -f testversion
+export -f testversion_skip_exit
+export -f testversion_with_exit
 export srcdir
 export TARGETVERSION
 export UPLOADVERSION

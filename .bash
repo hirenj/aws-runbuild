@@ -15,3 +15,8 @@ build() {
 		$RUNBUILDPATH/run_buildstep.sh pre_build && $RUNBUILDPATH/run_buildstep.sh build && $RUNBUILDPATH/run_buildstep.sh post_build
 	fi
 }
+
+build_test() {
+	export BUILD_TEST=1
+	build $@
+}
