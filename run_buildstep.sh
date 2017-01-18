@@ -10,7 +10,7 @@ pushd `dirname $0` > /dev/null
 scriptpath=`pwd`
 popd > /dev/null
 
-PATH="$PATH:$scriptpath"
+export PATH="$PATH:$scriptpath"
 
 parse_yaml() {
     local prefix=$2
