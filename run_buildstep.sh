@@ -5,6 +5,7 @@
 step=$1
 
 srcdir=$CODEBUILD_SRC_DIR
+WORKDIR=/codebuild/output
 
 pushd `dirname $0` > /dev/null
 scriptpath=`pwd`
@@ -89,6 +90,8 @@ export srcdir
 export TARGETVERSION
 export UPLOADVERSION
 export GIT_STATUS
+export WORKDIR
+
 
 echo "Source dir is $srcdir"
 
