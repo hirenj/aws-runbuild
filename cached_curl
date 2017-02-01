@@ -43,9 +43,16 @@ if [ $? -gt 0 ]; then
 	>&2 echo "Retrieving $@ into build cache (via $tempfile)"
 	curl -ssS $@ -o $tempfile
 	if [ $? -gt 0 ]; then
+		>&2 echo "Failure to retrieve file"
 		exit 1
 	fi
+	>&2 echo "Copying $tempfile to $cached_url"
 	put_s3 $cached_url $tempfile
+	if [ $? -gt 0 ]; then
+		>&2 echo "Could not cache file"
+		exit 1
+	fi
+	>&2 echo "Copied file for caching"
 fi
 
 cat $tempfile && rm $tempfile
