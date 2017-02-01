@@ -41,7 +41,7 @@ get_s3 $cached_url $tempfile
 
 if [ $? -gt 0 ]; then
 	>&2 echo "Retrieving $@ into build cache (via $tempfile)"
-	curl -ssS $@ -o $tempfile
+	curl --progress-bar $@ -o $tempfile
 	if [ $? -gt 0 ]; then
 		>&2 echo "Failure to retrieve file"
 		exit 1
