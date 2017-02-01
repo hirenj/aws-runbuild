@@ -27,6 +27,12 @@ put_s3() {
 
 urlid=$(echo -n "$url" | md5sum)
 
+if [ -n "$WORKDIR" ]; then
+	mkdir -p $WORKDIR/tmp
+	TMPDIR=$WORKDIR/tmp
+	export TMPDIR
+fi
+
 tempfile=$(mktemp)
 
 cached_url="s3://${BUILD_CACHE_BUCKET}/cache/$urlid"
@@ -34,8 +40,11 @@ cached_url="s3://${BUILD_CACHE_BUCKET}/cache/$urlid"
 get_s3 $cached_url $tempfile
 
 if [ $? -gt 0 ]; then
-	>&2 echo "Retrieving $@ into build cache"
+	>&2 echo "Retrieving $@ into build cache (via $tempfile)"
 	curl -ssS $@ -o $tempfile
+	if [ $? -gt 0 ]; then
+		exit 1
+	fi
 	put_s3 $cached_url $tempfile
 fi
 
