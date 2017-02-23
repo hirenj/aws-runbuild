@@ -2,6 +2,7 @@
 
 pushd `dirname $BASH_SOURCE` > /dev/null
 RUNBUILDPATH=`pwd`
+WORKDIR_BASE=/tmp
 popd > /dev/null
 
 build() {
@@ -9,6 +10,8 @@ build() {
 	export CODEBUILD_SRC_DIR="$PWD"
 	export BUILD_OUTPUT_BUCKET="$2"
 	export BUILD_OUTPUT_PREFIX="$3"
+	export WORKDIR="$WORKDIR_BASE/$BUILD_OUTPUT_PREFIX"
+	mkdir -p $WORKDIR
 	if [ ! -z "$STEP" ]; then
 		$RUNBUILDPATH/run_buildstep.sh $STEP
 	else

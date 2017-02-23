@@ -5,7 +5,9 @@
 step=$1
 
 srcdir=$CODEBUILD_SRC_DIR
-WORKDIR=/codebuild/output
+if [ -z "$WORKDIR" ]; then
+    WORKDIR="/codebuild/output"
+fi
 
 pushd `dirname $0` > /dev/null
 scriptpath=`pwd`
