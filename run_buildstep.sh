@@ -113,11 +113,16 @@ for cmd in "${install_commands[@]}"
 do
   echo "Executing $step $cmd"
   run_cmd "$cmd"
+  retvalue="$?"
+  if [ "$retvalue" -gt 0 ]; then
+    touch "$srcdir/FAILED"
+    exit "$retvalue"
+  fi
 done
 
 # pre_build
 
-if [[ "$step" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" ]]; then
+if [[ "$step" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" && ! -f "$srcdir/FAILED" ]]; then
     echo "Doing custom uploads"
     for file in "${buildspec_artifacts_files[@]}"
     do
