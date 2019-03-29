@@ -68,7 +68,7 @@ testversion_with_exit() {
     checkversion --s3-version-suffix="-${GIT_STATUS}" --fail-on-match --print-remote --s3path "s3:::${BUILD_OUTPUT_BUCKET}/${BUILD_OUTPUT_PREFIX}/${filename}"  "$@" > $srcdir/target_version.txt
     if [ $? -gt 0 ]; then
         if [ -z $noexit ]; then
-            echo "No need to run build" && exit 1
+            echo "No need to run build" && exit 2
         fi
         false
     else
