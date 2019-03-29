@@ -40,10 +40,11 @@ parse_yaml() {
 run_cmd() {
     if eval "$@"; then
         echo "Success"
+        return 0
     else
         retval="$?"
         echo "Failure with code $retval"
-        exit "$retval"
+        return "$retval"
     fi
 }
 
