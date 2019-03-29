@@ -41,8 +41,9 @@ run_cmd() {
     if eval "$@"; then
         echo "Success"
     else
-        echo "Failure"
-        exit 1
+        retval="$?"
+        echo "Failure with code $retval"
+        exit "$retval"
     fi
 }
 
