@@ -46,7 +46,7 @@ run_cmd() {
     fi
 }
 
-GIT_STATUS=$(cd $srcdir; git describe HEAD --tags | rev | sed 's/g-/./' | sed 's/-/+/' | rev)
+GIT_STATUS=$(cd $srcdir; git describe --abbrev=0 --tags)
 
 testversion() {
     testversion_with_exit '' $@
