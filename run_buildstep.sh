@@ -120,7 +120,7 @@ do
   run_cmd "$cmd"
   retvalue="$?"
   if [ "$retvalue" -gt 0 ]; then
-    if [[ ! -f "$srcdir/VERSION_MATCHING" ]]; then
+    if [[ ! -f "$srcdir/VERSION_MATCHING" && "$retvalue" -ne 2 ]]; then
         touch "$srcdir/FAILED"
         exit "$retvalue"
     fi
