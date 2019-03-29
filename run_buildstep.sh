@@ -97,6 +97,11 @@ export WORKDIR
 
 echo "Source dir is $srcdir"
 
+if [[ -f "$srcdir/VERSION_MATCHING" ]]; then
+    echo "Skipping build step because of matching version"
+    exit 0
+fi
+
 if [ -e "$srcdir/buildspec.yml" ]; then
     buildspec="$srcdir/buildspec.yml"
 fi
@@ -115,14 +120,16 @@ do
   run_cmd "$cmd"
   retvalue="$?"
   if [ "$retvalue" -gt 0 ]; then
-    touch "$srcdir/FAILED"
-    exit "$retvalue"
+    if [[ ! -f "$srcdir/VERSION_MATCHING" ]]; then
+        touch "$srcdir/FAILED"
+        exit "$retvalue"
+    fi
   fi
 done
 
 # pre_build
 
-if [[ "$step" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" && ! -f "$srcdir/FAILED" ]]; then
+if [[ "$step" == "post_build" && ! -z "$BUILD_OUTPUT_BUCKET" && ! -f "$srcdir/FAILED" && ! -f "$srcdir/VERSION_MATCHING" ]]; then
     echo "Doing custom uploads"
     for file in "${buildspec_artifacts_files[@]}"
     do
