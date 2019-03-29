@@ -38,7 +38,7 @@ parse_yaml() {
 }
 
 run_cmd() {
-    if (eval "$@"); then
+    if eval "$@"; then
         echo "Success"
         return 0
     else
