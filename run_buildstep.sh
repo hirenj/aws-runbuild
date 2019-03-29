@@ -37,6 +37,19 @@ parse_yaml() {
     }' | sed 's/_=/+=/g'
 }
 
+cleanup() {
+    rv=$?
+    if [[ "$rv" -eq 2 ]]; then
+        echo "Version matching exit code"
+        touch "$srcdir/VERSION_MATCHING"
+        exit 0
+    else
+        exit $rv
+    fi
+}
+
+trap "cleanup" EXIT
+
 run_cmd() {
     if eval "$@"; then
         echo "Success"
