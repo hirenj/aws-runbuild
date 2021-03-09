@@ -2,7 +2,7 @@
 
 pushd `dirname $BASH_SOURCE` > /dev/null
 RUNBUILDPATH=`pwd`
-WORKDIR_BASE=/tmp
+WORKDIR_BASE=/work
 popd > /dev/null
 
 build() {
