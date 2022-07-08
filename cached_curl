@@ -40,7 +40,7 @@ cached_url="s3://${BUILD_CACHE_BUCKET}/cache/$urlid"
 
 get_s3 $cached_url $tempfile
 
-if [ $? -gt 0 ]; then
+if [[ $? -gt 0 || -s "$tempfile" ]]; then
 	>&2 echo "Retrieving $@ into build cache (via $tempfile)"
 	curl --progress-bar $@ -o $tempfile
 	if [ $? -gt 0 ]; then
